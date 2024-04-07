@@ -1,0 +1,9 @@
+/venv*/
+*.egg-info/
+.pytest_cache/
+build/
+htmlcov/
+.coverage
+coverage.*
+dist/
+*.pyc
