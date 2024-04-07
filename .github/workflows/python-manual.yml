@@ -1,9 +1,8 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+name: Manual Trigger Workflow
 
-name: Python package
-
-# on: [push, pull_request]
+# Configure Manual Trigger
+on:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -28,7 +27,14 @@ jobs:
         sudo apt install libgtk-3-dev
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip setuptools
+        python -m pip install --upgrade pip setuptools six wheel
+        pip download wxPython
+    - name: Build
+      run: |
+        pip wheel -v vxPython-4.2.1.tar.gz
+        pip install vxPython-*.whl
+    - name: Install dependencies
+      run: |
         python -m pip install .
     - name: Test with pytest
       run: |
