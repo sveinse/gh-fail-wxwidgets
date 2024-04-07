@@ -1,0 +1,43 @@
+name: Manual Trigger Workflow
+
+# Configure Manual Trigger
+on:
+  workflow_dispatch:
+    branches:
+      - wxbuild
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: ["3.x"]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+        cache-dependency-path: '**/setup.cfg'
+    # This is needed for compiling wxwidgets
+    - name: Install gtk3
+      run: |
+        sudo apt install libgtk-3-dev
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools six wheel
+        pip download wxPython
+    - name: Build
+      run: |
+        pip wheel -v vxPython-4.2.1.tar.gz
+        pip install vxPython-*.whl
+    - name: Install dependencies
+      run: |
+        python -m pip install .
+    - name: Test with pytest
+      run: |
+        pytest
